@@ -7,7 +7,7 @@
 #include "stdlib.h" 
 #include <cstdlib>
 #include <ctime>
-#define BOARD_SIZE 8 // °¡·Î ¹× ¼¼·Î Ä­¼ö
+#define BOARD_SIZE 8 // ê°€ë¡œ ë° ì„¸ë¡œ ì¹¸ìˆ˜
 
 enum { SINGLE = 1, MULTI, MAP, EXIT };
 
@@ -22,7 +22,7 @@ int selection = 0;
 
 
 int dx[8] = { 1, 1, 1, 0, 0, -1, -1, -1 };
-int dy[8] = { 1, 0, -1, 1, -1, -1, 0, 1 }; //Å½»öÇÒ ¹æÇâ(°¡·Î, ¼¼·Î, ´ë°¢¼±)
+int dy[8] = { 1, 0, -1, 1, -1, -1, 0, 1 }; //íƒìƒ‰í•  ë°©í–¥(ê°€ë¡œ, ì„¸ë¡œ, ëŒ€ê°ì„ )
 
 class Board {
 private:
@@ -45,7 +45,7 @@ public:
 
 
 
-//ÄÜ¼Ö Ã¢ Å©±â ¼³Á¤
+//ì½˜ì†” ì°½ í¬ê¸° ì„¤ì •
 void init() {
 	system("mode con cols=72 lines=20 | title OTHELLO");
 	turnCnt = 0;
@@ -54,7 +54,7 @@ void init() {
 void gameInit() {
 	system("mode con cols=37 lines=40 | title OTHELLO");
 }
-// °ÔÀÓ Á¦¸ñ, ¸Ş´º Ãâ·Â
+// ê²Œì„ ì œëª©, ë©”ë‰´ ì¶œë ¥
 void titleDisplay() {
 	std::cout << "   .aMMMb   dMMMMMMP    dMP dMP     dMMMMMP    dMP      dMP     .aMMMb " << std::endl;
 	std::cout << "  dMP'dMP     dMP      dMP dMP     dMP        dMP      dMP     dMP'dMP " << std::endl;
@@ -62,11 +62,11 @@ void titleDisplay() {
 	std::cout << "dMP.aMP     dMP      dMP dMP     dMP        dMP      dMP     dMP.aMP   " << std::endl;
 	std::cout << "VMMMP'     dMP      dMP dMP     dMMMMMP    dMMMMMP  dMMMMMP  VMMMP'    " << std::endl;
 	std::cout << "========================================================================" << std::endl;
-	std::cout << "||    1 ½Ì±Û ¸ğµå     2 ¸ÖÆ¼ ¸ğµå     3 Àå¾Ö¹° ¼³Á¤     4 °ÔÀÓ Á¾·á   ||" << std::endl;
+	std::cout << "||    1 ì‹±ê¸€ ëª¨ë“œ     2 ë©€í‹° ëª¨ë“œ     3 ì¥ì• ë¬¼ ì„¤ì •     4 ê²Œì„ ì¢…ë£Œ   ||" << std::endl;
 	std::cout << "========================================================================" << std::endl;
 }
 
-//ÄÜ¼ÖÀÇ Ä¿¼­ À§Ä¡ º¯°æ
+//ì½˜ì†”ì˜ ì»¤ì„œ ìœ„ì¹˜ ë³€ê²½
 void gotoxy(int x, int y) {
 	HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 	COORD pos;
@@ -74,19 +74,19 @@ void gotoxy(int x, int y) {
 	pos.Y = y;
 	SetConsoleCursorPosition(consoleHandle, pos);
 }
-//½Ì±ÛÇÃ·¹ÀÌ ½Ã µ¹ »ö±ò ¼±ÅÃ
+//ì‹±ê¸€í”Œë ˆì´ ì‹œ ëŒ ìƒ‰ê¹” ì„ íƒ
 void selectSide() {
-	std::cout << "¼±°ø/ÈÄ°øÀ» ¼±ÅÃÇÏ¼¼¿ä(¼±°ø : 1 ÈÄ°ø : 2)" << std::endl;
-	std::cout << "»ó´ë°¡ µÉ Ä³¸¯ÅÍ¸¦ ¼±ÅÃÇÏ¼¼¿ä(1, 2, 3)" << std::endl;
+	std::cout << "ì„ ê³µ/í›„ê³µì„ ì„ íƒí•˜ì„¸ìš”(ì„ ê³µ : 1 í›„ê³µ : 2)" << std::endl;
+	std::cout << "ìƒëŒ€ê°€ ë  ìºë¦­í„°ë¥¼ ì„ íƒí•˜ì„¸ìš”(1, 2, 3)" << std::endl;
 	std::cin >> selection;
 }
 
-//½Ì±ÛÇÃ·¹ÀÌ ½Ã ÄÄÇ»ÅÍ
+//ì‹±ê¸€í”Œë ˆì´ ì‹œ ì»´í“¨í„°
 void randomAI() {
 	int possibleCnt = 0;
 	int possibleArr[BOARD_SIZE * BOARD_SIZE][2];
 	int r, c;
-	if (selection == 2 && turnCnt % 2 == 0) { //player: ÈÄ°ø, ÄÄÇ»ÅÍ: ¼±°ø
+	if (selection == 2 && turnCnt % 2 == 0) { //player: í›„ê³µ, ì»´í“¨í„°: ì„ ê³µ
 		for (int i = 0; i < BOARD_SIZE; i++) {
 			for (int j = 0; j < BOARD_SIZE; j++) {
 				if (check[i][j] == true) {
@@ -97,7 +97,7 @@ void randomAI() {
 			}
 		}
 	}
-	if (selection == 1 && turnCnt % 2 == 1) { //player: ¼±°ø, ÄÄÇ»ÅÍ: ÈÄ°ø
+	if (selection == 1 && turnCnt % 2 == 1) { //player: ì„ ê³µ, ì»´í“¨í„°: í›„ê³µ
 		for (int i = 0; i < BOARD_SIZE; i++) {
 			for (int j = 0; j < BOARD_SIZE; j++) {
 				if (check[i][j] == true) {
@@ -119,7 +119,7 @@ void randomAI() {
 			if (nx >= BOARD_SIZE || nx < 0 || ny >= BOARD_SIZE || ny < 0 || boardArr[nx][ny] == 3) {
 				continue;
 			}
-			if (turnCnt % 2 == 0 && boardArr[nx][ny] == 2) { // ÈæÂ÷·ÊÀÏ¶§
+			if (turnCnt % 2 == 0 && boardArr[nx][ny] == 2) { // í‘ì°¨ë¡€ì¼ë•Œ
 				while (nx + dx[i] < BOARD_SIZE &&
 					ny + dy[i] < BOARD_SIZE &&
 					nx + dx[i] >= 0 &&
@@ -143,7 +143,7 @@ void randomAI() {
 					}
 				}
 			}
-			if (turnCnt % 2 == 1 && boardArr[nx][ny] == 1) { // ¹éÂ÷·ÊÀÏ¶§
+			if (turnCnt % 2 == 1 && boardArr[nx][ny] == 1) { // ë°±ì°¨ë¡€ì¼ë•Œ
 				while (nx + dx[i] < BOARD_SIZE &&
 					ny + dy[i] < BOARD_SIZE &&
 					nx + dx[i] >= 0 &&
@@ -174,15 +174,15 @@ void randomAI() {
 	}
 }
 
-//ÆĞ½º
+//íŒ¨ìŠ¤
 void pass() {
 	passCnt++;
 	turnCnt++;
 }
 
-//ÁöÇü °¹¼ö¸¦ º¯°æÇÏ´Â ÇÔ¼ö
+//ì§€í˜• ê°¯ìˆ˜ë¥¼ ë³€ê²½í•˜ëŠ” í•¨ìˆ˜
 void mapControl() {
-	std::cout << "¿øÇÏ´Â Àå¾Ö¹°ÀÇ °¹¼ö¸¦ ÀÔ·ÂÇÏ¼¼¿ä" << std::endl;
+	std::cout << "ì›í•˜ëŠ” ì¥ì• ë¬¼ì˜ ê°¯ìˆ˜ë¥¼ ì…ë ¥í•˜ì„¸ìš”" << std::endl;
 	std::cin >> block;
 	if ((block <= BOARD_SIZE * BOARD_SIZE - 4) && (block >= 0)) {
 		int tmp = block;
@@ -196,9 +196,9 @@ void mapControl() {
 				(a == BOARD_SIZE / 2 - 1 && b == BOARD_SIZE / 2) ||
 				(a == BOARD_SIZE / 2 && b == BOARD_SIZE / 2 - 1) ||
 				(a == BOARD_SIZE / 2 - 1 && b == BOARD_SIZE / 2 - 1)) {
-				continue; //½ÃÀÛÇÒ ¶§ µ¹ÀÌ ÀÖ´Â ³× Ä­¿¡´Â Àå¾Ö¹°ÀÌ ¿Ã¼ö¾øÀ½
+				continue; //ì‹œì‘í•  ë•Œ ëŒì´ ìˆëŠ” ë„¤ ì¹¸ì—ëŠ” ì¥ì• ë¬¼ì´ ì˜¬ìˆ˜ì—†ìŒ
 			}
-			if (boardArr[a][b] != 3) { //Áßº¹µÈ ÁÂÇ¥´Â ¼¼Áö¾ÊÀ½
+			if (boardArr[a][b] != 3) { //ì¤‘ë³µëœ ì¢Œí‘œëŠ” ì„¸ì§€ì•ŠìŒ
 				boardArr[a][b] = 3;
 				tmp--;
 			}
@@ -206,93 +206,93 @@ void mapControl() {
 	}
 }
 
-//°ÔÀÓÆÇÀ» ±×¸®´Â ÇÔ¼ö
+//ê²Œì„íŒì„ ê·¸ë¦¬ëŠ” í•¨ìˆ˜
 void boardDisplay() {
 	system("cls");
 	for (int i = 1; i < BOARD_SIZE * 2 + 2; i++) {
 		for (int j = 1; j < BOARD_SIZE * 2 + 2; j++) {
 			if (i == 1) {
 				if (j == 1) {
-					std::cout << "¦£";
+					std::cout << "â”Œ";
 				}
 				else if (j == BOARD_SIZE * 2 + 1) {
-					std::cout << "¦¤" << std::endl;
+					std::cout << "â”" << std::endl;
 				}
 				else if (j % 2 == 0) {
-					std::cout << "¦¡¦¡¦¡";
+					std::cout << "â”€â”€â”€";
 				}
 				else {
-					std::cout << "¦¨";
+					std::cout << "â”¬";
 				}
 			}
 			else if (i == BOARD_SIZE * 2 + 1) {
 				if (j == 1) {
-					std::cout << "¦¦";
+					std::cout << "â””";
 				}
 				else if (j == BOARD_SIZE * 2 + 1) {
-					std::cout << "¦¥" << std::endl;
+					std::cout << "â”˜" << std::endl;
 				}
 				else if (j % 2 == 0) {
-					std::cout << "¦¡¦¡¦¡";
+					std::cout << "â”€â”€â”€";
 				}
 				else {
-					std::cout << "¦ª";
+					std::cout << "â”´";
 				}
 			}
 			else {
 				if (i % 2 == 1) {
 					if (j == 1) {
-						std::cout << "¦§";
+						std::cout << "â”œ";
 					}
 					else if (j == BOARD_SIZE * 2 + 1) {
-						std::cout << "¦©" << std::endl;
+						std::cout << "â”¤" << std::endl;
 					}
 					else if (j % 2 == 0) {
-						std::cout << "¦¡¦¡¦¡";
+						std::cout << "â”€â”€â”€";
 					}
 					else {
-						std::cout << "¦«";
+						std::cout << "â”¼";
 					}
 				}
 				else {
 					if (j == BOARD_SIZE * 2 + 1) {
-						std::cout << "¦¢" << std::endl;
+						std::cout << "â”‚" << std::endl;
 					}
 					else if (j % 2 == 0) {
 						if (check[i / 2 - 1][j / 2 - 1] == true) {
 							std::cout << " ";
-							SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 1); //ÆÄ¶õ»ö
-							std::cout << "¡Ø"; // µ¹À» ³õÀ» ¼ö ÀÖ´Â °÷ Ç¥½Ã
+							SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 1); //íŒŒë€ìƒ‰
+							std::cout << "â€»"; // ëŒì„ ë†“ì„ ìˆ˜ ìˆëŠ” ê³³ í‘œì‹œ
 							SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
 						}
 						else {
 							if (boardArr[i / 2 - 1][j / 2 - 1] == 0) {
-								std::cout << "   "; // ¾Æ¹«°Íµµ ¾øÀ¸¸é(0) °ø¹é Ãâ·Â
+								std::cout << "   "; // ì•„ë¬´ê²ƒë„ ì—†ìœ¼ë©´(0) ê³µë°± ì¶œë ¥
 							}
 							else if (boardArr[i / 2 - 1][j / 2 - 1] == 1) {
-								std::cout << " ¡Û"; // °ËÀº µ¹ÀÌ ÀÖÀ¸¸é(1) °ËÀº µ¹ Ãâ·Â
+								std::cout << " â—‹"; // ê²€ì€ ëŒì´ ìˆìœ¼ë©´(1) ê²€ì€ ëŒ ì¶œë ¥
 							}
 							else if (boardArr[i / 2 - 1][j / 2 - 1] == 2) {
-								std::cout << " ¡Ü"; // Èò µ¹ÀÌ ÀÖÀ¸¸é(2) Èò µ¹ Ãâ·Â
+								std::cout << " â—"; // í° ëŒì´ ìˆìœ¼ë©´(2) í° ëŒ ì¶œë ¥
 							}
 							else if (boardArr[i / 2 - 1][j / 2 - 1] == 3) {
 								std::cout << " ";
-								SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 4); //Àå¾Ö¹° »ö±ò »¡°­»öÀ¸·Î ¼³Á¤
-								std::cout << "¬·"; // Àå¾Ö¹°ÀÌ ÀÖÀ¸¸é(3) X Ãâ·Â
+								SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 4); //ì¥ì• ë¬¼ ìƒ‰ê¹” ë¹¨ê°•ìƒ‰ìœ¼ë¡œ ì„¤ì •
+								std::cout << "Ğ¥"; // ì¥ì• ë¬¼ì´ ìˆìœ¼ë©´(3) X ì¶œë ¥
 								SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
 							}
 							else if (boardArr[i / 2 - 1][j / 2 - 1] == 4) {
-								std::cout << " ¡Ş"; // ¸¶Áö¸· ³õÀº µ¹ÀÌ °ËÀºµ¹ÀÌ¸é(4) ¡Ù Ãâ·Â;
+								std::cout << " â—‡"; // ë§ˆì§€ë§‰ ë†“ì€ ëŒì´ ê²€ì€ëŒì´ë©´(4) â˜† ì¶œë ¥;
 								boardArr[i / 2 - 1][j / 2 - 1] = 1;
 							}
 							else if (boardArr[i / 2 - 1][j / 2 - 1] == 5) {
-								std::cout << " ¡ß"; // ¸¶Áö¸· ³õÀº µ¹ÀÌ Èòµ¹ÀÌ¸é(5) ¡Ú Ãâ·Â
+								std::cout << " â—†"; // ë§ˆì§€ë§‰ ë†“ì€ ëŒì´ í°ëŒì´ë©´(5) â˜… ì¶œë ¥
 								boardArr[i / 2 - 1][j / 2 - 1] = 2;
 							}
 						}
 					}
 					else {
-						std::cout << "¦¢";
+						std::cout << "â”‚";
 					}
 				}
 			}
@@ -300,7 +300,7 @@ void boardDisplay() {
 	}
 }
 
-//µ¹À» ³õÀ» ¼ö ÀÖ´Â ÀÚ¸®ÀÎÁö Ã¼Å©ÇÏ´Â ÇÔ¼ö
+//ëŒì„ ë†“ì„ ìˆ˜ ìˆëŠ” ìë¦¬ì¸ì§€ ì²´í¬í•˜ëŠ” í•¨ìˆ˜
 void possibleCheck() {
 	for (int i = 0; i < BOARD_SIZE; i++) {
 		for (int j = 0; j < BOARD_SIZE; j++) {
@@ -309,15 +309,15 @@ void possibleCheck() {
 	}
 
 	for (int i = 0; i < BOARD_SIZE; i++) {
-		for (int j = 0; j < BOARD_SIZE; j++) { // º¸µå ÀüÃ¼ µ¹¸é¼­ Ã¼Å©
-			if (boardArr[i][j] == 0) { // ºóÀÚ¸®¶ó¸é ±× Ä­ ÁÖÀ§ µ¹¸é¼­ Ã¼Å©
+		for (int j = 0; j < BOARD_SIZE; j++) { // ë³´ë“œ ì „ì²´ ëŒë©´ì„œ ì²´í¬
+			if (boardArr[i][j] == 0) { // ë¹ˆìë¦¬ë¼ë©´ ê·¸ ì¹¸ ì£¼ìœ„ ëŒë©´ì„œ ì²´í¬
 				for (int k = 0; k < 8; k++) {
 					int nx = i + dx[k];
 					int ny = j + dy[k];
 					if (nx >= BOARD_SIZE || ny >= BOARD_SIZE || nx < 0 || ny < 0 || boardArr[nx][ny] == 3) {
-						continue; //º¸µå ¹Û ¹ş¾î³ª´Â Ä­, Àå¾Ö¹° Ä­ Á¦¿Ü
+						continue; //ë³´ë“œ ë°– ë²—ì–´ë‚˜ëŠ” ì¹¸, ì¥ì• ë¬¼ ì¹¸ ì œì™¸
 					}
-					if (turnCnt % 2 == 0 && (boardArr[nx][ny] == 2 || boardArr[nx][ny] == 5)) {   //ÈæÂ÷·ÊÀÎ °æ¿ì 
+					if (turnCnt % 2 == 0 && (boardArr[nx][ny] == 2 || boardArr[nx][ny] == 5)) {   //í‘ì°¨ë¡€ì¸ ê²½ìš° 
 						while (0 <= nx + dx[k] &&
 							nx + dx[k] < BOARD_SIZE &&
 							0 <= ny + dy[k] &&
@@ -336,7 +336,7 @@ void possibleCheck() {
 							}
 						}
 					}
-					if (turnCnt % 2 == 1 && (boardArr[nx][ny] == 1 || boardArr[nx][ny] == 4)) {   //¹éÂ÷·ÊÀÎ °æ¿ì
+					if (turnCnt % 2 == 1 && (boardArr[nx][ny] == 1 || boardArr[nx][ny] == 4)) {   //ë°±ì°¨ë¡€ì¸ ê²½ìš°
 						while (0 <= nx + dx[k] &&
 							nx + dx[k] < BOARD_SIZE &&
 							0 <= ny + dy[k] &&
@@ -361,23 +361,23 @@ void possibleCheck() {
 	}
 }
 
-// ³õÀ» ¼ö ÀÖ´Â ÀÚ¸®¿¡ µ¹À» ³õÀ¸¸é µ¹À» µÚÁı´Â ÇÔ¼ö
+// ë†“ì„ ìˆ˜ ìˆëŠ” ìë¦¬ì— ëŒì„ ë†“ìœ¼ë©´ ëŒì„ ë’¤ì§‘ëŠ” í•¨ìˆ˜
 void putStone() {
 	int r, c;
 	char tmp_r;
 	while (1) {
 		if (passCnt > 0) {
-			std::cout << "´õ ÀÌ»ó ³õÀ» °÷ÀÌ ¾ø¾î ÆĞ½ºÇÕ´Ï´Ù" << std::endl;
+			std::cout << "ë” ì´ìƒ ë†“ì„ ê³³ì´ ì—†ì–´ íŒ¨ìŠ¤í•©ë‹ˆë‹¤" << std::endl;
 		}
-		std::cout << std::endl << "µ¹À» ³õÀ» °÷À» ÀÔ·ÂÇÏ¼¼¿ä ex) E5" << std::endl;
-		std::cout << "Áö±İÀº ";
+		std::cout << std::endl << "ëŒì„ ë†“ì„ ê³³ì„ ì…ë ¥í•˜ì„¸ìš” ex) E5" << std::endl;
+		std::cout << "ì§€ê¸ˆì€ ";
 		if (turnCnt % 2 == 0) {
-			std::cout << "¡Û";
+			std::cout << "â—‹";
 		}
 		else {
-			std::cout << "¡Ü";
+			std::cout << "â—";
 		}
-		std::cout << " Â÷·ÊÀÔ´Ï´Ù" << std::endl;
+		std::cout << " ì°¨ë¡€ì…ë‹ˆë‹¤" << std::endl;
 		std::cin >> tmp_r >> c;
 		r = tmp_r - 'A';
 		c -= 1;
@@ -389,7 +389,7 @@ void putStone() {
 				if (nx >= BOARD_SIZE || nx < 0 || ny >= BOARD_SIZE || ny < 0 || boardArr[nx][ny] == 3) {
 					continue;
 				}
-				if (turnCnt % 2 == 0 && boardArr[nx][ny] == 2) { // ÈæÂ÷·ÊÀÏ¶§
+				if (turnCnt % 2 == 0 && boardArr[nx][ny] == 2) { // í‘ì°¨ë¡€ì¼ë•Œ
 					while (nx + dx[i] < BOARD_SIZE &&
 						ny + dy[i] < BOARD_SIZE &&
 						nx + dx[i] >= 0 &&
@@ -413,7 +413,7 @@ void putStone() {
 						}
 					}
 				}
-				if (turnCnt % 2 == 1 && boardArr[nx][ny] == 1) { // ¹éÂ÷·ÊÀÏ¶§
+				if (turnCnt % 2 == 1 && boardArr[nx][ny] == 1) { // ë°±ì°¨ë¡€ì¼ë•Œ
 					while (nx + dx[i] < BOARD_SIZE &&
 						ny + dy[i] < BOARD_SIZE &&
 						nx + dx[i] >= 0 &&
@@ -443,13 +443,13 @@ void putStone() {
 			stoneCnt++;
 			break;
 		}
-		else { // µ¹À» ³õÀ» ¼ö ¾ø´Â À§Ä¡ÀÌ¸é ¸Ş½ÃÁö Ãâ·ÂÇÏ°í ´Ù½Ã ¹°À½
-			std::cout << "³õÀ» ¼ö ¾ø´Â À§Ä¡ÀÔ´Ï´Ù" << std::endl;
+		else { // ëŒì„ ë†“ì„ ìˆ˜ ì—†ëŠ” ìœ„ì¹˜ì´ë©´ ë©”ì‹œì§€ ì¶œë ¥í•˜ê³  ë‹¤ì‹œ ë¬¼ìŒ
+			std::cout << "ë†“ì„ ìˆ˜ ì—†ëŠ” ìœ„ì¹˜ì…ë‹ˆë‹¤" << std::endl;
 		}
 	}
 }
 
-//ÁÂÇ¥Ãà Ãâ·Â
+//ì¢Œí‘œì¶• ì¶œë ¥
 void xyCoordinate() {
 	for (int i = 0; i < BOARD_SIZE; i++) {
 		gotoxy(4 * BOARD_SIZE + 2, 2 * i + 1);
@@ -462,7 +462,7 @@ void xyCoordinate() {
 	}
 }
 
-//Á¡¼öÆÇ Ãâ·Â
+//ì ìˆ˜íŒ ì¶œë ¥
 void scoreBoard() {
 	int blackCnt = std::count(&boardArr[0][0], &boardArr[0][0] + BOARD_SIZE * BOARD_SIZE, 1) +
 		std::count(&boardArr[0][0], &boardArr[0][0] + BOARD_SIZE * BOARD_SIZE, 4);
@@ -477,28 +477,28 @@ void scoreBoard() {
 	for (int i = 0; i < BOARD_SIZE; i++) {
 		std::cout << " ";
 	}
-	std::cout << "¡Û  :  " << blackCnt << "   " << "¡Ü  :  " << whiteCnt << std::endl;
+	std::cout << "â—‹  :  " << blackCnt << "   " << "â—  :  " << whiteCnt << std::endl;
 	for (int i = 0; i < BOARD_SIZE; i++) {
 		std::cout << "****";
 	}
 	std::cout << "*****";
 }
 
-//°ÔÀÓÁ¾·á ÈÄ ½ÂÀÚÆÇ´ÜÇÏ¿© Ãâ·Â
+//ê²Œì„ì¢…ë£Œ í›„ ìŠ¹ìíŒë‹¨í•˜ì—¬ ì¶œë ¥
 void winnerJudge() {
 	int blackCnt = std::count(&boardArr[0][0], &boardArr[0][0] + BOARD_SIZE * BOARD_SIZE, 1) +
 		std::count(&boardArr[0][0], &boardArr[0][0] + BOARD_SIZE * BOARD_SIZE, 4);
 	int whiteCnt = std::count(&boardArr[0][0], &boardArr[0][0] + BOARD_SIZE * BOARD_SIZE, 2) +
 		std::count(&boardArr[0][0], &boardArr[0][0] + BOARD_SIZE * BOARD_SIZE, 5);
-	std::cout << std::endl << "°ÔÀÓÀÌ Á¾·áµÇ¾ú½À´Ï´Ù. " << std::endl;
+	std::cout << std::endl << "ê²Œì„ì´ ì¢…ë£Œë˜ì—ˆìŠµë‹ˆë‹¤. " << std::endl;
 	if (blackCnt > whiteCnt) {
-		std::cout << "½ÂÀÚ´Â ¡Û ÀÔ´Ï´Ù." << std::endl;
+		std::cout << "ìŠ¹ìëŠ” â—‹ ì…ë‹ˆë‹¤." << std::endl;
 	}
 	else if (whiteCnt > blackCnt) {
-		std::cout << "½ÂÀÚ´Â ¡Ü ÀÔ´Ï´Ù." << std::endl;
+		std::cout << "ìŠ¹ìëŠ” â— ì…ë‹ˆë‹¤." << std::endl;
 	}
 	else {
-		std::cout << "ºñ°å½À´Ï´Ù." << std::endl;
+		std::cout << "ë¹„ê²¼ìŠµë‹ˆë‹¤." << std::endl;
 	}
 	system("PAUSE");
 }
