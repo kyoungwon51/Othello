@@ -18,9 +18,12 @@ int passCnt = 0;
 int stoneCnt = 4;
 int winner = 0;
 int block = 0;
+int selection = 0;
+
 
 int dx[8] = { 1, 1, 1, 0, 0, -1, -1, -1 };
 int dy[8] = { 1, 0, -1, 1, -1, -1, 0, 1 }; //탐색할 방향(가로, 세로, 대각선)
+
 
 //콘솔 창 크기 설정
 void init() {
@@ -54,20 +57,107 @@ void gotoxy(int x, int y) {
 //싱글플레이 시 돌 색깔 선택
 void selectSide() {
 	std::cout << "선공/후공을 선택하세요(선공 : 1 후공 : 2)" << std::endl;
-	std::cout << "상대가 될 캐릭터를 선택하세요(1, 2, 3)" << std::endl;
+	std::cin >> selection;
 }
 
 //싱글플레이 시 컴퓨터
-void ai() {
+void randomAI() {
+	Sleep(5000);
+	int possibleCnt = 0;
+	int possibleArr[BOARD_SIZE * BOARD_SIZE][2];
+	int r, c;
+	if (selection == 2 && turnCnt % 2 == 0) { //player: 후공, 컴퓨터: 선공
+		for (int i = 0; i < BOARD_SIZE; i++) {
+			for (int j = 0; j < BOARD_SIZE; j++) {
+				if (check[i][j] == true) {
+					possibleArr[possibleCnt][0] = i;
+					possibleArr[possibleCnt][1] = j;
+					possibleCnt += 1;
+				}
+			}
+		}
+	}
+	if (selection == 1 && turnCnt % 2 == 1) { //player: 선공, 컴퓨터: 후공
+		for (int i = 0; i < BOARD_SIZE; i++) {
+			for (int j = 0; j < BOARD_SIZE; j++) {
+				if (check[i][j] == true) {
+					possibleArr[possibleCnt][0] = i;
+					possibleArr[possibleCnt][1] = j;
+					possibleCnt += 1;
+				}
+			}
+		}
+	}
+	std::srand((unsigned int)std::time(NULL));
+	int tmp = rand() % std::count(&check[0][0], &check[0][0] + BOARD_SIZE * BOARD_SIZE, true);
+	r = possibleArr[tmp][0];
+	c = possibleArr[tmp][1];
 
+	for (int i = 0; i < 8; i++) {
+		int nx = r + dx[i];
+		int ny = c + dy[i];
+		if (nx >= BOARD_SIZE || nx < 0 || ny >= BOARD_SIZE || ny < 0 || boardArr[nx][ny] == 3) {
+			continue;
+		}
+		if (turnCnt % 2 == 0 && boardArr[nx][ny] == 2) { // 흑차례일때
+			while (nx + dx[i] < BOARD_SIZE &&
+				ny + dy[i] < BOARD_SIZE &&
+				nx + dx[i] >= 0 &&
+				ny + dy[i] >= 0 &&
+				boardArr[nx + dx[i]][ny + dy[i]] != 3) {
+				nx += dx[i];
+				ny += dy[i];
+				if (boardArr[nx][ny] != 2) {
+					break;
+				}
+			}
+			if (boardArr[nx][ny] == 1) {
+				while (1) {
+					boardArr[nx][ny] = 1;
+					if (nx == r && ny == c) {
+						boardArr[r][c] = 4;
+						break;
+					}
+					nx -= dx[i];
+					ny -= dy[i];
+				}
+			}
+		}
+		if (turnCnt % 2 == 1 && boardArr[nx][ny] == 1) { // 백차례일때
+			while (nx + dx[i] < BOARD_SIZE &&
+				ny + dy[i] < BOARD_SIZE &&
+				nx + dx[i] >= 0 &&
+				ny + dy[i] >= 0 &&
+				boardArr[nx + dx[i]][ny + dy[i]] != 3) {
+				nx += dx[i];
+				ny += dy[i];
+				if (boardArr[nx][ny] != 1) {
+					break;
+				}
+			}
+			if (boardArr[nx][ny] == 2) {
+				while (1) {
+					boardArr[nx][ny] = 2;
+					if (nx == r && ny == c) {
+						boardArr[r][c] = 5;
+						break;
+					}
+					nx -= dx[i];
+					ny -= dy[i];
+				}
+			}
+		}
+	}
+	passCnt = 0;
+	turnCnt++;
+	stoneCnt++;
 }
-//패스 시 메시지 출력
+
+
+//패스
 void pass() {
-	std::cout << "더 이상 놓을 곳이 없어 패스합니다" << std::endl;
-	std::cout << "상대 턴으로 넘어갑니다" << std::endl;
 	passCnt++;
 	turnCnt++;
-	system("PAUSE");
 }
 
 //지형 갯수를 변경하는 함수
@@ -255,9 +345,10 @@ void possibleCheck() {
 void putStone() {
 	int r, c;
 	char tmp_r;
-	int nx, ny;
-
 	while (1) {
+		if (passCnt > 0) {
+			std::cout << "더 이상 놓을 곳이 없어 패스합니다" << std::endl;
+		}
 		std::cout << std::endl << "돌을 놓을 곳을 입력하세요 ex) E5" << std::endl;
 		std::cout << "지금은 ";
 		if (turnCnt % 2 == 0) {
@@ -273,8 +364,8 @@ void putStone() {
 
 		if (check[r][c] == true) {
 			for (int i = 0; i < 8; i++) {
-				nx = r + dx[i];
-				ny = c + dy[i];
+				int nx = r + dx[i];
+				int ny = c + dy[i];
 				if (nx >= BOARD_SIZE || nx < 0 || ny >= BOARD_SIZE || ny < 0 || boardArr[nx][ny] == 3) {
 					continue;
 				}
@@ -291,7 +382,6 @@ void putStone() {
 						}
 					}
 					if (boardArr[nx][ny] == 1) {
-
 						while (1) {
 							boardArr[nx][ny] = 1;
 							if (nx == r && ny == c) {

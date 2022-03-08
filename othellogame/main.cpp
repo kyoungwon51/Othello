@@ -16,16 +16,25 @@ int main() {
 
 		switch (menu) {
 		case SINGLE:
+			selectSide();
 			gameInit();
+			
 			while (passCnt < 2 && stoneCnt < BOARD_SIZE * BOARD_SIZE - block) {
-				selectSide();
+				possibleCheck();
+				boardDisplay();
+				xyCoordinate();
+				scoreBoard();
 				if (std::count(&check[0][0], &check[0][0] + BOARD_SIZE * BOARD_SIZE, true) == 0) {
 					pass();
 					continue;
 				}
 				else {
-					ai();
-					putStone();
+					if ((selection == 1 && turnCnt % 2 == 0) || (selection == 2 && turnCnt % 2 == 1)) {
+						putStone();
+					}
+					else {					
+						randomAI();
+					}
 				}
 			}
 			boardDisplay();
@@ -34,7 +43,7 @@ int main() {
 			winnerJudge();
 			break;
 
-		case MULTI:
+		case MULTI: 
 			gameInit();
 			while (passCnt < 2 && turnCnt < BOARD_SIZE * BOARD_SIZE - 4 - block) {
 				possibleCheck();
@@ -56,7 +65,7 @@ int main() {
 			winnerJudge();
 			break;
 
-		case MAP:
+		case MAP: 
 			mapControl();
 			break;
 
