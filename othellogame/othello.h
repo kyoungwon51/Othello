@@ -33,6 +33,10 @@ void init() {
 }
 void gameInit() {
 	system("mode con cols=37 lines=40 | title OTHELLO");
+	boardArr[BOARD_SIZE / 2 - 1][BOARD_SIZE / 2 - 1] = 2;
+	boardArr[BOARD_SIZE / 2][BOARD_SIZE / 2] = 2;
+	boardArr[BOARD_SIZE / 2 - 1][BOARD_SIZE / 2] = 1;
+	boardArr[BOARD_SIZE / 2][BOARD_SIZE / 2 - 1] = 1;
 }
 // 게임 제목, 메뉴 출력
 void titleDisplay() {
@@ -60,7 +64,7 @@ void selectSide() {
 	std::cin >> selection;
 }
 
-//싱글플레이 시 컴퓨터
+//싱글플레이 시 랜덤배치하는 컴퓨터
 void randomAI() {
 	Sleep(5000);
 	int possibleCnt = 0;
@@ -381,7 +385,7 @@ void putStone() {
 							break;
 						}
 					}
-					if (boardArr[nx][ny] == 1) {
+					if (boardArr[nx][ny] == 1) { //탐색 중 상대 돌 발견 시 되돌아오며 자신의 돌을 뒤집음 
 						while (1) {
 							boardArr[nx][ny] = 1;
 							if (nx == r && ny == c) {
@@ -405,7 +409,7 @@ void putStone() {
 							break;
 						}
 					}
-					if (boardArr[nx][ny] == 2) {
+					if (boardArr[nx][ny] == 2) { //탐색 중 상대 돌 발견 시 되돌아오며 자신의 돌을 뒤집음 
 						while (1) {
 							boardArr[nx][ny] = 2;
 							if (nx == r && ny == c) {
@@ -480,5 +484,6 @@ void winnerJudge() {
 	else {
 		std::cout << "비겼습니다." << std::endl;
 	}
+	selection = 0;
 	system("PAUSE");
 }

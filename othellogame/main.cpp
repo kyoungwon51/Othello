@@ -2,12 +2,6 @@
 #include "othello.h"
 
 int main() {
-	boardArr[BOARD_SIZE / 2 - 1][BOARD_SIZE / 2 - 1] = 2;
-	boardArr[BOARD_SIZE / 2][BOARD_SIZE / 2] = 2;
-	boardArr[BOARD_SIZE / 2 - 1][BOARD_SIZE / 2] = 1;
-	boardArr[BOARD_SIZE / 2][BOARD_SIZE / 2 - 1] = 1;
-	int block = 0;
-
 	while (1) {
 		int menu;
 		init();
@@ -32,7 +26,7 @@ int main() {
 					if ((selection == 1 && turnCnt % 2 == 0) || (selection == 2 && turnCnt % 2 == 1)) {
 						putStone();
 					}
-					else {					
+					else {	
 						randomAI();
 					}
 				}
