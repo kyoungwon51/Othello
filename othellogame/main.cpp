@@ -15,7 +15,7 @@ int main() {
 		std::cin >> menu;
 
 		switch (menu) {
-		case SINGLE:
+		case SINGLE: //싱글모드
 			gameInit();
 			selectSide();
 			while (passCnt < 2 && stoneCnt < BOARD_SIZE * BOARD_SIZE - block) {
@@ -42,7 +42,7 @@ int main() {
 			winnerJudge();
 			break;
 
-		case MULTI:
+		case MULTI: // 2인모드
 			gameInit();
 			while (passCnt < 2 && turnCnt < BOARD_SIZE * BOARD_SIZE - 4 - block) {
 				possibleCheck();
