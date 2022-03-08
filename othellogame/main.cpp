@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include "othello.h"
 
 int main() {
@@ -15,25 +15,17 @@ int main() {
 		std::cin >> menu;
 
 		switch (menu) {
-		case SINGLE: //싱글모드
+		case SINGLE:
 			gameInit();
-			selectSide();
 			while (passCnt < 2 && stoneCnt < BOARD_SIZE * BOARD_SIZE - block) {
-				possibleCheck();
-				boardDisplay();
-				xyCoordinate();
-				scoreBoard();
+				selectSide();
 				if (std::count(&check[0][0], &check[0][0] + BOARD_SIZE * BOARD_SIZE, true) == 0) {
 					pass();
 					continue;
 				}
-				else{
-					if ((selection == 1 && turnCnt % 2 == 0) || (selection == 2 && turnCnt % 2 == 1)) {
-						putStone();
-					}
-					else {
-						randomAI();
-					}					
+				else {
+					ai();
+					putStone();
 				}
 			}
 			boardDisplay();
@@ -42,7 +34,7 @@ int main() {
 			winnerJudge();
 			break;
 
-		case MULTI: // 2인모드
+		case MULTI:
 			gameInit();
 			while (passCnt < 2 && turnCnt < BOARD_SIZE * BOARD_SIZE - 4 - block) {
 				possibleCheck();
@@ -64,7 +56,7 @@ int main() {
 			winnerJudge();
 			break;
 
-		case MAP: // 맵 변경
+		case MAP:
 			mapControl();
 			break;
 
