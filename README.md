@@ -1,5 +1,6 @@
 # Othello
 
+[Google](https://google.com)
 # 제목 1
 ## 제목 2
 ### 제목 3
