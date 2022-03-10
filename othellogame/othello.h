@@ -11,7 +11,7 @@
 
 enum { SINGLE = 1, MULTI, MAP, EXIT };
 
-int boardArr[BOARD_SIZE][BOARD_SIZE] = { 0 };
+int boardArr[BOARD_SIZE][BOARD_SIZE];
 bool check[BOARD_SIZE][BOARD_SIZE] = { false };
 int turnCnt = 0;
 int passCnt = 0;
@@ -33,6 +33,7 @@ void init() {
 }
 void gameInit() {
 	system("mode con cols=37 lines=40 | title OTHELLO");
+	boardArr[BOARD_SIZE][BOARD_SIZE] = { 0 };
 	boardArr[BOARD_SIZE / 2 - 1][BOARD_SIZE / 2 - 1] = 2;
 	boardArr[BOARD_SIZE / 2][BOARD_SIZE / 2] = 2;
 	boardArr[BOARD_SIZE / 2 - 1][BOARD_SIZE / 2] = 1;
@@ -485,5 +486,12 @@ void winnerJudge() {
 		std::cout << "비겼습니다." << std::endl;
 	}
 	selection = 0;
+	//보드 초기화
+	for (int i = 0; i < BOARD_SIZE; i++) {
+		for (int j = 0; j < BOARD_SIZE; j++) {
+			boardArr[i][j] = 0;
+			check[i][j] = false;
+		}
+	}
 	system("PAUSE");
 }
