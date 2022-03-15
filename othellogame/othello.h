@@ -8,6 +8,7 @@
 #include <cstdlib>
 #include <ctime>
 #define BOARD_SIZE 8 // 가로 및 세로 칸수
+#define BUFSIZE 1024
 
 enum { SINGLE = 1, MULTI, MAP, EXIT };
 
@@ -19,6 +20,7 @@ int stoneCnt = 4;
 int winner = 0;
 int block = 0;
 int selection = 0;
+char message[BUFSIZE] = "";
 
 
 int dx[8] = { 1, 1, 1, 0, 0, -1, -1, -1 };
@@ -27,28 +29,38 @@ int dy[8] = { 1, 0, -1, 1, -1, -1, 0, 1 }; //탐색할 방향(가로, 세로, 대각선)
 
 //콘솔 창 크기 설정
 void init() {
-	system("mode con cols=72 lines=20 | title OTHELLO");
+	system("mode con cols=64 lines=20 | title OTHELLO");
 	turnCnt = 0;
 	passCnt = 0;
+	stoneCnt = 4;
 }
 void gameInit() {
 	system("mode con cols=37 lines=40 | title OTHELLO");
-	boardArr[BOARD_SIZE][BOARD_SIZE] = { 0 };
+	for (int i = 0; i < BOARD_SIZE; i++) {
+		for (int j = 0; j < BOARD_SIZE; j++) {
+			if (boardArr[i][j] != 3) {
+				boardArr[i][j] = 0;
+			}
+		}
+	}
 	boardArr[BOARD_SIZE / 2 - 1][BOARD_SIZE / 2 - 1] = 2;
 	boardArr[BOARD_SIZE / 2][BOARD_SIZE / 2] = 2;
 	boardArr[BOARD_SIZE / 2 - 1][BOARD_SIZE / 2] = 1;
 	boardArr[BOARD_SIZE / 2][BOARD_SIZE / 2 - 1] = 1;
+	turnCnt = 0;
+	passCnt = 0;
+	stoneCnt = 4;
 }
 // 게임 제목, 메뉴 출력
 void titleDisplay() {
-	std::cout << "   .aMMMb   dMMMMMMP    dMP dMP     dMMMMMP    dMP      dMP     .aMMMb " << std::endl;
-	std::cout << "  dMP'dMP     dMP      dMP dMP     dMP        dMP      dMP     dMP'dMP " << std::endl;
-	std::cout << " dMP dMP     dMP      dMMMMMP     dMMMP      dMP      dMP     dMP dMP  " << std::endl;
-	std::cout << "dMP.aMP     dMP      dMP dMP     dMP        dMP      dMP     dMP.aMP   " << std::endl;
-	std::cout << "VMMMP'     dMP      dMP dMP     dMMMMMP    dMMMMMP  dMMMMMP  VMMMP'    " << std::endl;
-	std::cout << "========================================================================" << std::endl;
-	std::cout << "||    1 싱글 모드     2 멀티 모드     3 장애물 설정     4 게임 종료   ||" << std::endl;
-	std::cout << "========================================================================" << std::endl;
+	std::cout << " _______  _______  _______  _______  _____    _____    _______ " << std::endl;
+	std::cout << "|       ||_     _||   |   ||    ___||     |_ |     |_ |       |" << std::endl;
+	std::cout << "|   -   |  |   |  |       ||    ___||       ||       ||   -   |" << std::endl;
+	std::cout << "|_______|  |___|  |___|___||_______||_______||_______||_______|" << std::endl;
+
+	std::cout << "================================================================" << std::endl;
+	std::cout << "||    1 싱글 모드  2 멀티 모드  3 장애물 설정  4 게임 종료    ||" << std::endl;
+	std::cout << "================================================================" << std::endl;
 }
 
 //콘솔의 커서 위치 변경
@@ -163,9 +175,11 @@ void randomAI() {
 void pass() {
 	passCnt++;
 	turnCnt++;
+	message[BOARD_SIZE * BOARD_SIZE + 1] = passCnt;
+	message[BOARD_SIZE * BOARD_SIZE + 2] = turnCnt;
 }
 
-//지형 갯수를 변경하는 함수
+//지형 갯수를 변경
 void mapControl() {
 	std::cout << "원하는 장애물의 갯수를 입력하세요" << std::endl;
 	std::cin >> block;
@@ -191,7 +205,7 @@ void mapControl() {
 	}
 }
 
-//게임판을 그리는 함수
+//판을 그림
 void boardDisplay() {
 	system("cls");
 	for (int i = 1; i < BOARD_SIZE * 2 + 2; i++) {
@@ -285,7 +299,7 @@ void boardDisplay() {
 	}
 }
 
-//돌을 놓을 수 있는 자리인지 체크하는 함수
+//돌을 놓을 수 있는 자리인지 체크
 void possibleCheck() {
 	for (int i = 0; i < BOARD_SIZE; i++) {
 		for (int j = 0; j < BOARD_SIZE; j++) {
@@ -364,8 +378,10 @@ void putStone() {
 		}
 		std::cout << " 차례입니다" << std::endl;
 		std::cin >> tmp_r >> c;
+		
 		r = tmp_r - 'A';
 		c -= 1;
+
 
 		if (check[r][c] == true) {
 			for (int i = 0; i < 8; i++) {
@@ -426,6 +442,15 @@ void putStone() {
 			passCnt = 0;
 			turnCnt++;
 			stoneCnt++;
+
+			for (int i = 1; i <= BOARD_SIZE * BOARD_SIZE; i++) {
+				message[i] = boardArr[(i - 1) / BOARD_SIZE][(i - 1) % BOARD_SIZE];
+			}
+			message[BOARD_SIZE * BOARD_SIZE + 1] = passCnt;
+			message[BOARD_SIZE * BOARD_SIZE + 2] = turnCnt;
+			message[BOARD_SIZE * BOARD_SIZE + 3] = stoneCnt;
+
+
 			break;
 		}
 		else { // 돌을 놓을 수 없는 위치이면 메시지 출력하고 다시 물음
